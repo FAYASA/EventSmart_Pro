@@ -1,14 +1,13 @@
-﻿using EventService.Data.Models;
+﻿using EventService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventService.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -21,7 +20,7 @@ namespace EventService.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Configure many-to-many for EventCategory
+
             builder.Entity<EventCategory>()
                 .HasKey(ec => new { ec.EventId, ec.CategoryId });
 
@@ -34,6 +33,20 @@ namespace EventService.Data
                 .HasOne(ec => ec.Category)
                 .WithMany(c => c.EventCategories)
                 .HasForeignKey(ec => ec.CategoryId);
+
+            // Prevent multiple cascade paths by restricting delete on Event-Registration
+            builder.Entity<Registration>()
+                .HasOne(r => r.Event)
+                .WithMany(e => e.Registrations)
+                .HasForeignKey(r => r.EventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Explicitly configure the Attendee relationship to also restrict delete
+            builder.Entity<Registration>()
+                .HasOne(r => r.Attendee)
+                .WithMany(u => u.Registrations)
+                .HasForeignKey(r => r.AttendeeId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace EventService.Data.Models
+﻿namespace EventService.Models
 {
     public class EventCategory
     {
@@ -8,6 +8,5 @@
         public int CategoryId { get; set; }
         public Category Category { get; set; }
     }
-
 
 }

@@ -6083,11 +6083,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GitHub_Repo\\eventsmart-pro\\EventSmartPro\\EventService\\EventService.csproj",
+      "projectUniqueName": "D:\\GitHub_Repo\\EventSmart_Pro\\EventService\\EventService.csproj",
       "projectName": "EventService",
-      "projectPath": "D:\\GitHub_Repo\\eventsmart-pro\\EventSmartPro\\EventService\\EventService.csproj",
+      "projectPath": "D:\\GitHub_Repo\\EventSmart_Pro\\EventService\\EventService.csproj",
       "packagesPath": "C:\\Users\\muham\\.nuget\\packages\\",
-      "outputPath": "D:\\GitHub_Repo\\eventsmart-pro\\EventSmartPro\\EventService\\obj\\",
+      "outputPath": "D:\\GitHub_Repo\\EventSmart_Pro\\EventService\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
