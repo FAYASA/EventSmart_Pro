@@ -15,24 +15,10 @@ namespace EventService.Data
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Registration> Registrations { get; set; }
-        public DbSet<EventCategory> EventCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<EventCategory>()
-                .HasKey(ec => new { ec.EventId, ec.CategoryId });
-
-            builder.Entity<EventCategory>()
-                .HasOne(ec => ec.Event)
-                .WithMany(e => e.EventCategories)
-                .HasForeignKey(ec => ec.EventId);
-
-            builder.Entity<EventCategory>()
-                .HasOne(ec => ec.Category)
-                .WithMany(c => c.EventCategories)
-                .HasForeignKey(ec => ec.CategoryId);
 
             // Prevent multiple cascade paths by restricting delete on Event-Registration
             builder.Entity<Registration>()
@@ -47,6 +33,13 @@ namespace EventService.Data
                 .WithMany(u => u.Registrations)
                 .HasForeignKey(r => r.AttendeeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Event>()
+                .HasOne(e => e.Category)
+                .WithMany(c => c.Events)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250703190441_InitialCreate")]
+    [Migration("20250704211955_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -119,6 +119,12 @@ namespace EventService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -146,26 +152,13 @@ namespace EventService.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("OrganizerId");
 
                     b.HasIndex("VenueId");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EventService.Models.EventCategory", b =>
-                {
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EventId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("EventCategories");
                 });
 
             modelBuilder.Entity("EventService.Models.Registration", b =>
@@ -351,6 +344,12 @@ namespace EventService.Migrations
 
             modelBuilder.Entity("EventService.Models.Event", b =>
                 {
+                    b.HasOne("EventService.Models.Category", "Category")
+                        .WithMany("Events")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("EventService.Models.ApplicationUser", "Organizer")
                         .WithMany("OrganizedEvents")
                         .HasForeignKey("OrganizerId")
@@ -363,28 +362,11 @@ namespace EventService.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Category");
+
                     b.Navigation("Organizer");
 
                     b.Navigation("Venue");
-                });
-
-            modelBuilder.Entity("EventService.Models.EventCategory", b =>
-                {
-                    b.HasOne("EventService.Models.Category", "Category")
-                        .WithMany("EventCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventService.Models.Event", "Event")
-                        .WithMany("EventCategories")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EventService.Models.Registration", b =>
@@ -466,13 +448,11 @@ namespace EventService.Migrations
 
             modelBuilder.Entity("EventService.Models.Category", b =>
                 {
-                    b.Navigation("EventCategories");
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("EventService.Models.Event", b =>
                 {
-                    b.Navigation("EventCategories");
-
                     b.Navigation("Registrations");
                 });
 

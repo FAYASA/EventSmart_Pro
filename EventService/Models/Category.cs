@@ -6,7 +6,7 @@ namespace EventService.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<EventCategory> EventCategories { get; set; }
+        public ICollection<Event> Events { get; set; }
     }
 
 
