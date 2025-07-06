@@ -40,6 +40,8 @@ export class EventEditComponent implements OnInit {
     startDate: '',
     endDate: '',
     imageUrl: '',
+    categoryId: undefined,
+    venueId: undefined
   };
 
   categories: Category[] = [];
@@ -62,25 +64,31 @@ export class EventEditComponent implements OnInit {
     }
     this.loading = true;
 
-    // Load categories & venues for dropdowns
+    // Load categories
     this.http.get<Category[]>(`${environment.apiUrl}/category`).subscribe({
-      next: data => (this.categories = data),
+      next: data => {
+        this.categories = data;
+        console.log('Loaded categories:', data);
+      },
       error: err => console.error('Failed to load categories', err),
     });
 
+    //Load venues
     this.http.get<Venue[]>(`${environment.apiUrl}/venue`).subscribe({
-      next: data => (this.venues = data),
+      next: data => {
+        this.venues = data;
+        console.log('Loaded venues:', data);
+      },
       error: err => console.error('Failed to load venues', err),
     });
 
-    // Load event details
+    //Load event data
     this.http.get<EventItem>(`${environment.apiUrl}/event/${id}`).subscribe({
       next: data => {
         this.event = {
           ...data,
-          // Convert dates to yyyy-MM-dd for input[type=date]
-          startDate: data.startDate ? data.startDate.split('T')[0] : '',
-          endDate: data.endDate ? data.endDate.split('T')[0] : '',
+          startDate: data.startDate?.split('T')[0],
+          endDate: data.endDate?.split('T')[0]
         };
         this.loading = false;
       },

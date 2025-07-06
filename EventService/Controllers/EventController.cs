@@ -141,5 +141,34 @@ namespace EventService.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [Authorize(Roles = "Admin,Organizer")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] CreateEventDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var eventEntity = await _context.Events.FindAsync(id);
+
+            if (eventEntity == null)
+                return NotFound("Event not found.");
+
+            // Optional: restrict edit to the creator only
+            if (eventEntity.OrganizerId != userId && !User.IsInRole("Admin"))
+                return Forbid("Only the creator or an admin can update this event.");
+
+            eventEntity.Title = dto.Title;
+            eventEntity.Description = dto.Description;
+            eventEntity.StartDate = dto.StartDate;
+            eventEntity.EndDate = dto.EndDate;
+            eventEntity.ImageUrl = dto.ImageUrl;
+            eventEntity.VenueId = dto.VenueId;
+            eventEntity.CategoryId = dto.CategoryId;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(eventEntity);
+        }
+
+
     }
 }

@@ -1,52 +1,68 @@
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" routerLink="/">EventSmart</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">EventSmart</a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/">Events</a>
-            </li>
-            <li class="nav-item" *ngIf="isLoggedIn() && isOrganizer() || isAdmin() || isAttendee()">
-              <a class="nav-link" routerLink="/events/new">Create Event</a>
-            </li>
-            <li class="nav-item" *ngIf="isLoggedIn() && isOrganizer() || isAdmin() || isAttendee()">
-              <a class="nav-link" routerLink="/venue/new">Venue</a>
-            </li>
-            <li class="nav-item" *ngIf="isLoggedIn() && isOrganizer() || isAdmin() || isAttendee()">
-              <a class="nav-link" routerLink="/category/new">Category</a>
-            </li>
-                        <li class="nav-item" *ngIf="isLoggedIn() && isOrganizer() || isAdmin() || isAttendee()">
-              <a class="nav-link" routerLink="/eventRegister/new">Register Event</a>
-            </li>
-          </ul>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
 
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item" *ngIf="!isLoggedIn()">
-              <a class="nav-link" routerLink="/login">Login</a>
-            </li>
-            <li class="nav-item" *ngIf="!isLoggedIn()">
-              <a class="nav-link" routerLink="/register">Register</a>
-            </li>
-            <li class="nav-item" *ngIf="isLoggedIn()">
-              <span class="navbar-text me-2">Hi, {{ getUser()?.name || getUser()?.fullName || 'User' }}</span>
-            </li>
-            <li class="nav-item" *ngIf="isLoggedIn()">
-              <a class="nav-link text-danger" (click)="logout()" style="cursor: pointer;">Logout</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/">Events</a>
+        </li>
+
+        <!-- Event Organizer or Admin -->
+        <li class="nav-item" *ngIf="isLoggedIn() && (isOrganizer() || isAdmin())">
+          <a class="nav-link" routerLink="/events/new">Create Event</a>
+        </li>
+
+        <li class="nav-item" *ngIf="isLoggedIn() && (isOrganizer() || isAdmin())">
+          <a class="nav-link" routerLink="/venue/new">Add Venue</a>
+        </li>
+
+        <li class="nav-item" *ngIf="isLoggedIn() && (isOrganizer() || isAdmin())">
+          <a class="nav-link" routerLink="/category/new">Add Category</a>
+        </li>
+
+        <!-- Attendee -->
+        <li class="nav-item" *ngIf="isLoggedIn() && isAttendee()">
+          <a class="nav-link" routerLink="/eventRegister/new">Register for Events</a>
+        </li>
+
+      </ul>
+
+      <ul class="navbar-nav ms-auto">
+        <!-- Guest Users -->
+        <ng-container *ngIf="!isLoggedIn()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/register">Register</a>
+          </li>
+        </ng-container>
+
+        <!-- Logged In Users -->
+        <ng-container *ngIf="isLoggedIn()">
+          <li class="nav-item">
+            <span class="navbar-text me-2">
+              Hi, {{ getUser()?.name || getUser()?.fullName || 'User' }}
+            </span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-danger" (click)="logout()" style="cursor: pointer;">Logout</a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</nav>
