@@ -22,36 +22,80 @@ namespace EventService.Controllers
             _context = context;
         }
 
-        // GET: api/event
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Organizer,Attendee")]
         [HttpGet]
         public async Task<IActionResult> GetEvents()
         {
             var events = await _context.Events
                 .Include(e => e.Venue)
                 .Include(e => e.Category)
+                .Select(e => new EventDto
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    Description = e.Description,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    ImageUrl = e.ImageUrl,
+                    Venue = new VenueDto
+                    {
+                        Id = e.Venue.Id,
+                        Name = e.Venue.Name
+                    },
+                    Category = new CategoryDto
+                    {
+                        Id = e.Category.Id,
+                        Name = e.Category.Name
+                    }
+                })
                 .ToListAsync();
+
             return Ok(events);
         }
 
+
         // GET: api/event/5
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize(Roles = "Admin,Organizer,Attendee")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEvent(int id)
         {
-            var e = await _context.Events
-                .Include(ev => ev.Venue)
-                .Include(ev => ev.Category)
-                .FirstOrDefaultAsync(ev => ev.Id == id);
+            var ev = await _context.Events
+                .Include(e => e.Venue)
+                .Include(e => e.Category)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
-            if (e == null)
+            if (ev == null)
                 return NotFound();
 
-            return Ok(e);
+            var eventDto = new EventDto
+            {
+                Id = ev.Id,
+                Title = ev.Title,
+                Description = ev.Description,
+                StartDate = ev.StartDate,
+                EndDate = ev.EndDate,
+                ImageUrl = ev.ImageUrl,
+                Venue = new VenueDto
+                {
+                    Id = ev.Venue!.Id,
+                    Name = ev.Venue.Name
+                },
+                Category = new CategoryDto
+                {
+                    Id = ev.Category!.Id,
+                    Name = ev.Category.Name
+                }
+            };
+
+            return Ok(eventDto);
         }
 
+
+
         // POST: api/event
-        [Authorize(Roles = "Organizer")]
+       // [Authorize(Roles = "Organizer")]
+        [Authorize(Roles = "Admin,Organizer,Attendee")]
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventDto dto)
         {
@@ -82,7 +126,8 @@ namespace EventService.Controllers
         }
 
         // DELETE: api/event/5
-        [Authorize(Roles = "Organizer")]
+        //[Authorize(Roles = "Organizer")]
+        [Authorize(Roles = "Admin,Organizer")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {

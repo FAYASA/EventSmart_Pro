@@ -1,0 +1,34 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Create Venue</h2>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form (ngSubmit)="submitVenue()">
+        <div class="mb-3">
+          <label for="name" class="form-label">Venue Name</label>
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            [(ngModel)]="venue.name"
+            name="name"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Address</label>
+          <textarea
+            id="address"
+            class="form-control"
+            [(ngModel)]="venue.address"
+            name="address"
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Create</button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -37,7 +37,8 @@ public class RegistrationController : ControllerBase
 
         _context.Registrations.Add(registration);
         await _context.SaveChangesAsync();
-        return Ok("Registered successfully.");
+        return Ok(new { message = "Registered successfully." });
+
     }
 
     [Authorize(Roles = "Attendee")]

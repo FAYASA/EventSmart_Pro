@@ -100,7 +100,22 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
+// Enable CORS for all origins, methods, and headers (for development purposes only)
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAngularDev");
 
 // Seed roles
 using (var scope = app.Services.CreateScope())
@@ -117,6 +132,7 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    //app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

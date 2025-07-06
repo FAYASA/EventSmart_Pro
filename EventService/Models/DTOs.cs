@@ -22,15 +22,28 @@
     public class EventDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int CategoryId { get; set; }
-        public int VenueId { get; set; }
-        public string OrganizerId { get; set; } // User ID of the organizer
+        public string ImageUrl { get; set; }
+
+        public VenueDto Venue { get; set; }
+        public CategoryDto Category { get; set; }
     }
 
+
+    public class VenueDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class CategoryDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
     public class CreateEventDto
     {
         public string Title { get; set; }
